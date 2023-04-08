@@ -1,0 +1,66 @@
+form {
+    width: 510px;
+    font-family: Verdana, serif;
+}
+
+label {
+    display: block;
+    margin: 10px 0;
+    position: relative;
+}
+
+label::after {
+    position: absolute;
+    right: 7px;
+    bottom: 0;
+    line-height: 30px;
+    font-size: 1.5em;
+}
+
+label.hidden-input::after {
+    display: none;
+}
+
+label span.error {
+    display: none;
+}
+
+label.success input {
+    border-color: #050;
+    box-shadow: 0 0 4px 0 #050;
+}
+
+label.success::after {
+    content: "✓";
+    color: #050;
+}
+
+label.error span.error {
+    display: inline;
+    float: right;
+    color: #500;
+}
+
+label.error input {
+    border-color: #500;
+    box-shadow: 0 0 4px 0 #500;
+}
+
+label.error::after {
+    content: "⤫";
+    color: #500;
+}
+
+
+label span {
+    display: inline-block;
+    color: #555;
+}
+
+label input {
+    width: 100%;
+    height: 30px;
+    font-size: 1.3em !important;
+    padding-right: 25px !important;
+    transition: box-shadow .3s ease-in-out;
+}

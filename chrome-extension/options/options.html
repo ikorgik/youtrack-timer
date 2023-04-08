@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+</head>
+<body>
+<link rel="stylesheet" href="options.css" />
+<!-- TODO label styles with animation -->
+<form>
+    <label><span>Youtrack server domain</span>
+        <span class="error">Unreachable URL</span>
+        <input name="youtrack_url" id="youtrack_url" type="text" placeholder="https://company.youtrack.cloud" />
+    </label>
+    <label class="hidden-input"><span>Note: Extension uses existing Youtrack authentication</span>
+        <span class="error">You're logged out</span>
+        <input type="hidden" id="youtrack_auth" />
+    </label>
+    <input type="submit" value="Save" />
+    <!-- TODO clear -->
+    <span id="status"></span>
+</form>
+
+<script src="/js/lib/require.js"></script>
+<script src="/js/requireConfig.js"></script>
+<script src="/js/lib/jquery-ajax-sizzle.min.js"></script>
+<script src="/js/options.js"></script>
+</body>
+</html>
