@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ERPAL Timetracking</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/font-awesome/css/font-awesome.min.css">
+    <script src="js/lib/jquery.min.js"></script>
+    <script src="js/jquery.easypiechart.min.js"></script>
+<!--    <script src="js/popup.js"></script>-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="loading-page processed">
+        <img src="img/icon79.png" alt=""/>
+        <span class="load-label">Loading...</span>
+      </div>
+      <div class="login-page">
+        <img src="img/icon180.png" alt=""/>
+        <a class="login" href="" target="_blank"><i class="fa fa-sign-in"></i>Sign In</a>
+      </div>
+      <div class="error-page">
+        <div class="messages"></div>
+      </div>
+
+      <div class="statistics-page">
+        <div class="actions">
+          <a class="close" href="#"><i class="fa fa-times"></i></a>
+          <a class="tt-link" href="" target="_blank"><i class="fa fa-clock-o"></i></a>
+        </div>
+
+        <table class="current-task">
+          <tr>
+            <td class="task-label"><span class="label">No active timetrackings</span></td>
+            <td class="task-active"><i class="fa"></i></td>
+            <td class="time"></td>
+          <tr>
+        </table>
+
+        <div class="details">
+          <div class="chart" data-percent="73">
+            <span class="chart-label">Today</span>
+            <span class="chart-time"></span>
+            <span class="chart-limit"></span>
+            <span class="chart-rest"></span>
+          </div>
+
+          <div class="week row">
+            <span class="label">Week</span>
+            <span class="time"></span>
+          </div>
+          <div class="month row">
+            <span class="label">Month</span>
+            <span class="time"></span>
+          </div>
+        </div>
+
+        <div class="working-days">
+          <span class="label"><i class="fa fa-calendar"></i>Working days</span>
+          <span class="time"></span>
+        </div>
+      </div>
+    </div>
+
+  </body>
+</html>

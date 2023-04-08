@@ -13,10 +13,8 @@ function ($, utils) {
   }
 
   function reInitOptions (cb) {
-    chrome.storage.sync.get(['youtrack_url', 'harvest_url', 'harvest_login', 'harvest_password'], function (data) {
+    chrome.storage.sync.get(['youtrack_url'], function (data) {
       youtrack.url = function (clean) { return data.youtrack_url + (clean ? '' : '/api/') }
-      harvest.url = function () { return data.harvest_url }
-      harvest.auth = function () { return btoa(data.harvest_login + ':' + data.harvest_password) }
 
       ;(cb || utils._f)()
     })
@@ -24,7 +22,7 @@ function ($, utils) {
   reInitOptions()
 
   function isOptionsPresent() {
-    return youtrack.url() && harvest.url() && harvest.auth()
+    return youtrack.url()
   }
 
   // used to check YT url
@@ -45,6 +43,26 @@ function ($, utils) {
         })
       }
   }
+
+  // Get current user data.
+  youtrack.currentUser = {
+      url: function () {
+        return this.url() + 'users/me'
+      }.bind(youtrack),
+      get: function (success, error) {
+        $.ajax({
+          url: this.url() + '?fields=id,fullName',
+          headers: {
+            accept: 'application/json',
+            authorization: 'Bearer ' + youtrack.auth
+          },
+          success: success,
+          error: error,
+          dataType: 'json',
+        })
+      }
+  }
+
   youtrack.workItem = {
     url: function (issueId) {
       return this.url() + 'issues/%issue_id%/timeTracking/workItems/'.replace('%issue_id%', issueId)
@@ -78,38 +96,9 @@ function ($, utils) {
     }
   }
 
-  harvest.time = {
-    url: function () {
-      return this.url() + '/daily/'
-    }.bind(harvest),
-    get: function (id, date, success, error) {
-      var url = this.url()
-
-      if (id) {
-        url += 'show/' + id
-
-      } else if (date) {
-        var d = new Date(date)
-        url += +utils.dayOfYear(d) + '/' + d.getFullYear()
-      }
-      $.ajax({
-        url: url + '?slim=1',
-        headers: {
-          accept: 'application/json',
-          authorization: 'Basic ' + harvest.auth()
-        },
-        dataType: 'json',
-        success: success,
-        error: error
-      })
-    }
-
-  }
-
   return {
     isOptionsPresent: isOptionsPresent,
     reInitOptions: reInitOptions,
-    youtrack: youtrack,
-    harvest: harvest
+    youtrack: youtrack
   }
 });

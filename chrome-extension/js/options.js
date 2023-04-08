@@ -4,9 +4,6 @@ function ($, api) {
 
   var $youtrackUrl = $('#youtrack_url')
   var $youtrackAuth = $('#youtrack_auth')
-  var $harvestUrl = $('#harvest_url')
-  var $harvestLogin = $('#harvest_login')
-  var $harvestPassword = $('#harvest_password')
 
   function toggleState ($el, state) {
     $el.parent('label').removeClass('error success').addClass(state)
@@ -17,15 +14,18 @@ function ($, api) {
     e.preventDefault()
 
     chrome.storage.sync.set({
-      youtrack_url: $youtrackUrl.val(),
-      harvest_url: $harvestUrl.val(),
-      harvest_login: $harvestLogin.val(),
-      harvest_password: $harvestPassword.val()
+      youtrack_url: $youtrackUrl.val()
     }, function () {
       api.reInitOptions(function () {
 
-        api.youtrack.projectIds.get(function () {
-          toggleState($youtrackUrl, 'success')
+        api.youtrack.currentUser.get(function (currentUser) {
+          toggleState($youtrackUrl, 'success');
+
+          // Save current user to the storage.
+          chrome.storage.sync.set({
+            currentUser: currentUser
+          });
+
         }, function (xhr) {
           if (xhr.status == 401) {
             toggleState($youtrackAuth, 'error')
@@ -33,19 +33,6 @@ function ($, api) {
           } else {
             toggleState($youtrackUrl, 'error')
           }
-        })
-
-        api.harvest.time.get(null, null, function () {
-          toggleState($([$harvestUrl[0], $harvestLogin[0], $harvestPassword[0]]), 'success')
-        }, function (xhr) {
-          if (xhr.status == 401) {
-            toggleState($harvestUrl, 'success')
-            toggleState($([$harvestLogin[0], $harvestPassword[0]]), 'error')
-          } else {
-            toggleState($harvestUrl, 'error')
-            toggleState($([$harvestLogin[0], $harvestPassword[0]]), '')
-          }
-
         })
       })
 
@@ -63,20 +50,12 @@ function ($, api) {
   function restoreOptions() {
     // Use default values
     chrome.storage.sync.get({
-      youtrack_url: '',
-      harvest_url: '',
-      harvest_login: '',
-      harvest_password: ''
+      youtrack_url: ''
     }, function (items) {
       $youtrackUrl.val(items.youtrack_url);
-      $harvestUrl.val(items.harvest_url);
-      $harvestLogin.val(items.harvest_login);
-      $harvestPassword.val(items.harvest_password);
     });
   }
 
-
   restoreOptions()
   $('form').submit(saveOptions)
-
 });

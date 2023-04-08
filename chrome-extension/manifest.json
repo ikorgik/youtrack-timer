@@ -24,7 +24,8 @@
       "js/lib/require.js",
       "js/requireConfig.js",
       "js/lib/jquery-ajax-sizzle.min.js",
-      "js/eventPage.js"
+      "js/eventPage.js",
+      "js/popup.js"
     ]
   },
   "name": "YouTrack Time Tracker",
@@ -36,7 +37,8 @@
   ],
   "browser_action": {
     "default_icon": "images/h-app@128px.png",
-    "default_title": "instant sync"
+    "default_title": "instant sync",
+    "default_popup": "popup.html"
   },
   "options_ui": {
     "page": "options/options.html",
