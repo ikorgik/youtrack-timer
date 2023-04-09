@@ -4,9 +4,9 @@
     <title>YouTrack Time Tracker</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="css/style.css" />
-    <link rel="stylesheet" href="css/font-awesome/css/font-awesome.min.css">
     <script src="js/lib/jquery.min.js"></script>
-    <script src="js/popup.js" type="module"></script>
+    <script src="js/api.js"></script>
+    <script src="js/popup.js"></script>
   </head>
   <body>
     <div class="container">
@@ -17,8 +17,8 @@
       <div class="content">
         <div class="active-timer">
           <div class="active-timer-header">
-            <div class="issue-header"><div class="issue-summary">Сделать виджет для трекинга времени</div> <div class="project">Aiger House (Common tasks)</div></div>
-            <div class="time">00:12</div>
+            <div class="issue-header"><div class="issue-summary"></div> <div class="project"></div></div>
+            <div class="time"></div>
           </div>
           <div class="description-field">
             <label for="description">Description</label>
@@ -26,6 +26,9 @@
           </div>
           <button class="stop-timer active">Stop timer</button>
           <button class="cancel">Cancel</button>
+        </div>
+        <div class="no-active-timers">
+          No active timers. <br> Go to the issue page and start timer.
         </div>
 
         <div class="loading-page processed">

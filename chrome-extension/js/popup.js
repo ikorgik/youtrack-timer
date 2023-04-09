@@ -1,129 +1,47 @@
-(function ($) {
 
-  async function initPopup() {
-    const { currentUser, youtrack_url, authToken } = await chrome.storage.sync.get(['youtrack_url', 'currentUser', 'authToken']);
-    let workItems = [];
-    let activeWorkItem = null;
-    const timerId = `[timer_u${currentUser.id}]`;
+const initPopup = async () => {
+  const { currentUser, youtrack_url, authToken } = await chrome.storage.sync.get(['youtrack_url', 'currentUser', 'authToken']);
+  YouTrackAPI.init({ currentUser, youtrack_url, authToken });
 
-    try {
-      const fields = 'id,created,issue(id,summary),text';
-      const url = youtrack_url + '/api/workItems';
+  const activeWorkItem = await YouTrackAPI.workItems.getActive();
 
-      workItems = await $.ajax({
-        url: url + '?fields=' + fields + '&author=me&query=' + timerId,
-        headers: {
-          accept: 'application/json',
-          authorization: 'Bearer ' + authToken
-        },
-        dataType: 'json',
-        async: false
-      })
+  if (activeWorkItem === null) {
+    document.getElementsByClassName('no-active-timers')[0].style.display = 'block';
+  }
+  else {
+    const total = Date.now() - activeWorkItem.created;
+    const hours = Math.floor((total % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const formattedHours = hours < 10 ? '0' + hours : hours;
+    const minutes = Math.floor((total % (1000 * 60 * 60)) / (1000 * 60));
+    const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
 
-    } catch (error) {
-      console.error('catchError', error);
-      return;
-    }
+    document.getElementsByClassName('issue-summary')[0].innerHTML = activeWorkItem.issue.summary;
+    document.getElementsByClassName('project')[0].innerHTML = activeWorkItem.issue.project.name;
+    document.getElementsByClassName('time')[0].innerHTML = formattedHours + ':' + formattedMinutes;
 
-    $.each(workItems, async function(key, value) {
-      if (value.text.includes(timerId)) {
-        activeWorkItem = value;
-         await chrome.storage.sync.set({
-          activeWorkItem: value
-        });
-        return false;
-      }
-    });
+    document.getElementsByClassName('active-timer')[0].style.display = 'block';
 
-    // Fill current task container.
-    if (activeWorkItem !== null) {
-      const total = Date.now() - activeWorkItem.created;
-      var hours = Math.floor((total % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      var minutes = Math.floor((total % (1000 * 60 * 60)) / (1000 * 60));
-
-      const formattedTime = hours + ":" + minutes;
-
-      var $current_task = $(".active-tracking");
-      $(".label", $current_task).text(activeWorkItem.issue.summary);
-      $(".time", $current_task).text(formattedTime);
-
-      //$(".time", $current_task).html(time_output(data.current.amount, data.current.estimate));
-
-      $(".button .fa", $current_task).addClass("fa-pause");
-      //$(".button .fa", $current_task).addClass("fa-play");
-      // if (!data.current.active) {
-      //   $(".task-active .fa", $current_task).removeClass("fa-play").addClass("fa-pause");
-      // }
-      // if (!data.current.active) {
-      //   $(".task-active .fa", $current_task).removeClass("fa-play").addClass("fa-pause");
-      // }
-    }
-
-    // Show timetracking container.
-    $(".loading-page").fadeOut(200, function() {
-      $(this).removeClass("processed");
-      $(".current-task, .actions").animate({opacity: 1.0}, 300);
-      $(".working-days").delay(150).animate({opacity: 1.0}, 700);
-    });
-
-    console.log('activeWorkItem', activeWorkItem);
+    document.getElementsByClassName('stop-timer')[0].addEventListener("click", stopButtonClick);
+    document.getElementsByClassName('cancel')[0].addEventListener("click", () => { window.close(); });
   }
 
-  // When popup opens.
+  document.getElementsByClassName('loading-page')[0].style.display = 'none';
+};
+
+const stopButtonClick = async (event) => {
+  const { currentUser, youtrack_url, authToken } = await chrome.storage.sync.get(['youtrack_url', 'currentUser', 'authToken']);
+  YouTrackAPI.init({ currentUser, youtrack_url, authToken });
+
+  const description = document.getElementById('description').value;
+
+  // Stop any active timers.
+  await YouTrackAPI.workItems.stopActive(description);
+
+  window.close();
+}
+
+window.addEventListener("DOMContentLoaded", (event) => {
+  // Initialize popup when opened.
   initPopup();
+});
 
-  // Click Stop button.
-  $(".active-tracking .button").click(async function() {
-    const { currentUser, youtrack_url, authToken, activeWorkItem } = await chrome.storage.sync.get(['youtrack_url', 'currentUser', 'authToken', 'activeWorkItem']);
-    console.log('activeWorkItem', activeWorkItem)
-
-    try {
-      const itemId = activeWorkItem.id;
-      const issueId = activeWorkItem.issue.id;
-      const url = youtrack_url + '/api/issues/%issue_id%/timeTracking/workItems/'.replace('%issue_id%', issueId);
-      const total = Date.now() - activeWorkItem.created;
-
-      var workData = {
-        text: activeWorkItem.issue.summary,
-        duration: {
-          minutes: parseInt((total / 1000 / 60).toFixed())
-        },
-        // worktype: {name: entry.task} // @todo: add worktype support.
-      }
-
-      console.log('workData', workData);
-
-      const aaa = await $.ajax({
-      //$.ajax({
-        url: url + (itemId || ''),
-        headers: {
-          accept: 'application/json',
-          authorization: 'Bearer ' + authToken
-        },
-        //method: itemId ? "PUT" : "POST",
-        type: 'post',
-        success: function (data) {
-          console.log('success', data)
-        },
-        error: function (error) {
-          console.log('error', error)
-        },
-        data: JSON.stringify(workData),
-        dataType: 'json',
-        async: false,
-        contentType: 'application/json',
-      })
-      console.log('aaa', aaa);
-
-    } catch (error) {
-      console.error('catchError', error);
-      return;
-    }
-
-
-
-
-  });
-
-
-})(jQuery);

@@ -47,10 +47,21 @@ a:hover {
 .content {
   padding: 20px;
   background-color: #eff4f7;
+  min-height: 200px;
+}
+.no-active-timers {
+  text-align: center;
+  font-size: 1.2em;
+  padding: 60px;
+}
+.no-active-timers,
+.active-timer {
+  display: none;
 }
 .active-timer-header {
   display: flex;
   margin-bottom: 20px;
+  min-height: 60px;
 }
 .issue-summary {
   font-size: 1.3em;
@@ -153,6 +164,9 @@ button:hover {
   left: calc(50% - 19px);
   font-size: 66%;
   opacity: 0.8;
+}
+.missed-options-page {
+  padding: 20px;
 }
 .loader {
   border: 10px solid #dfe2e5; /* Light grey */

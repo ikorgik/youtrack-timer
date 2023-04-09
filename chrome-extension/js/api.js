@@ -32,7 +32,7 @@ const YouTrackAPI = {
 
     workItems: {
         getActive: async function () {
-            const fields = 'fields=id,created,issue(id,idReadable,summary),text';
+            const fields = 'fields=id,created,issue(id,idReadable,summary,project(id,name)),text';
             const currentUserId = YouTrackAPI.currentUser.id;
             const timerId = `[timer_u${currentUserId}]`
             const url = YouTrackAPI.url + '/api/workItems' + `?${fields}` + '&author=me&query=' + timerId;
@@ -56,7 +56,7 @@ const YouTrackAPI = {
             }
             return activeWorkItem;
         },
-        stopActive: async () => {
+        stopActive: async (description = '') => {
             const activeWorkItem = await YouTrackAPI.workItems.getActive();
             if (activeWorkItem === null) {
                 return null;
@@ -69,7 +69,7 @@ const YouTrackAPI = {
             const minutes = parseInt((totalTime / 1000 / 60).toFixed());
 
             var workData = {
-                text: activeWorkItem.issue.summary,
+                text: description || activeWorkItem.issue.summary,
                 duration: {
                     minutes: minutes < 1 ? 1 : minutes,
                 },
