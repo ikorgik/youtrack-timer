@@ -7,6 +7,8 @@ const initPopup = async () => {
 
   if (activeWorkItem === null) {
     document.getElementsByClassName('no-active-timers')[0].style.display = 'block';
+
+    await chrome.runtime.sendMessage({ timer_status: 'off' });
   }
   else {
     const total = Date.now() - activeWorkItem.created;
@@ -23,6 +25,8 @@ const initPopup = async () => {
 
     document.getElementsByClassName('stop-timer')[0].addEventListener("click", stopButtonClick);
     document.getElementsByClassName('cancel')[0].addEventListener("click", () => { window.close(); });
+
+    await chrome.runtime.sendMessage({ timer_status: 'on' });
   }
 
   document.getElementsByClassName('loading-page')[0].style.display = 'none';
@@ -36,6 +40,8 @@ const stopButtonClick = async (event) => {
 
   // Stop any active timers.
   await YouTrackAPI.workItems.stopActive(description);
+
+  await chrome.runtime.sendMessage({ timer_status: 'off' });
 
   window.close();
 }

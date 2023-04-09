@@ -1,0 +1,6 @@
+.youtrack-timer-button {
+    margin: 0 18px !important;
+}
+.youtrack-timer-button[data-timer-active="1"] {
+    background: #d4edff;
+}

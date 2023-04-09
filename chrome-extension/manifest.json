@@ -8,7 +8,9 @@
       "matches": [
         "https://*.youtrack.cloud/*"
       ],
-      "css": []
+      "css": [
+        "css/content.css"
+      ]
     }
   ],
   "description": "Allows to track YouTrack time via button.",
@@ -30,6 +32,9 @@
     },
     "default_title": "Start a YouTrack timer",
     "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "service-worker.js"
   },
   "options_ui": {
     "page": "options.html"

@@ -22,7 +22,10 @@ const createButtonElement = () => {
   let button;
   button = document.createElement("button");
   button.type = 'button';
-  button.classList.add('youtrack-timer');
+  button.classList.add('youtrack-timer-button');
+  button.classList.add('button_aba4');
+  button.classList.add('button_fc1d');
+  button.classList.add('light_b3b0');
   button.innerHTML = 'Start timer';
   return button;
 };
@@ -48,6 +51,8 @@ const addButtonToToolbar = async (issueContainer) => {
 }
 
 const timerButtonClick = async (event) => {
+  event.target.disabled = true;
+
   const { currentUser, youtrack_url, authToken } = await chrome.storage.sync.get(['youtrack_url', 'currentUser', 'authToken']);
   YouTrackAPI.init({ currentUser, youtrack_url, authToken });
 
@@ -61,13 +66,15 @@ const timerButtonClick = async (event) => {
     const activeWorkItem = await YouTrackAPI.workItems.startTimer(issueId);
     event.target.innerHTML = 'Stop timer';
     event.target.setAttribute('data-timer-active', 1);
+    await chrome.runtime.sendMessage({ timer_status: 'on' });
   }
   else {
     event.target.innerHTML = 'Start timer';
     event.target.setAttribute('data-timer-active', 0);
+    await chrome.runtime.sendMessage({ timer_status: 'off' });
   }
 
-
+  event.target.disabled = false;
 }
 
 
