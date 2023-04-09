@@ -1,0 +1,78 @@
+
+// Callback function to execute when mutations are observed
+const issuePageShown = (mutationList, observer) => {
+  for (const mutation of mutationList) {
+    if (mutation.type === "childList") {
+      const issueContainer = document.querySelector(".yt-issue-view:not(.tracker-button-initialized)");
+      if (issueContainer !== null) {
+        issueContainer.classList.add('tracker-button-initialized');
+
+        console.log("overlayContainer", issueContainer);
+        addButtonToToolbar(issueContainer);
+      }
+    }
+  }
+};
+
+// Create an observer instance linked to the callback function
+const observer = new MutationObserver(issuePageShown);
+
+// Start observing the target node for configured mutations
+observer.observe(document.body, { childList: true, subtree: true });
+
+const createButtonElement = () => {
+  let button;
+  button = document.createElement("button");
+  button.type = 'button';
+  button.classList.add('youtrack-timer');
+  button.innerHTML = 'Start timer';
+  return button;
+};
+
+const addButtonToToolbar = async (issueContainer) => {
+  const issueToolbar = issueContainer.querySelector(".yt-issue-toolbar");
+
+  const issueId = issueContainer.querySelector(".js-issue-id").textContent
+  const { currentUser, youtrack_url, authToken } = await chrome.storage.sync.get(['youtrack_url', 'currentUser', 'authToken']);
+  YouTrackAPI.init({ currentUser, youtrack_url, authToken });
+  const activeWorkItem = await YouTrackAPI.workItems.getActive();
+
+  const buttonIsActive = activeWorkItem !== null && activeWorkItem.issue.idReadable === issueId;
+
+  const timerButton = createButtonElement();
+  timerButton.setAttribute('data-issue-id', issueId);
+  timerButton.setAttribute('data-timer-active', buttonIsActive ? 1 : 0);
+  if (buttonIsActive) {
+    timerButton.innerHTML = 'Stop timer';
+  }
+  issueToolbar.appendChild(timerButton);
+  timerButton.addEventListener("click", timerButtonClick);
+  console.log('buttonIsActive', buttonIsActive)
+}
+
+const timerButtonClick = async (event) => {
+  const { currentUser, youtrack_url, authToken } = await chrome.storage.sync.get(['youtrack_url', 'currentUser', 'authToken']);
+  YouTrackAPI.init({ currentUser, youtrack_url, authToken });
+  const stopWorkItem = await YouTrackAPI.workItems.stopActive();
+  console.log('stopActive', stopWorkItem);
+
+  const buttonIsActive = parseInt(event.target.getAttribute('data-timer-active'));
+  const issueId = event.target.getAttribute('data-issue-id');
+  console.log('buttonState', buttonIsActive, issueId)
+
+  if (!buttonIsActive) {
+    const activeWorkItem = await YouTrackAPI.workItems.startTimer(issueId);
+    event.target.innerHTML = 'Stop timer';
+    event.target.setAttribute('data-timer-active', 1);
+    console.log('started new timer', activeWorkItem);
+  }
+  else {
+    event.target.innerHTML = 'Start timer';
+    event.target.setAttribute('data-timer-active', 0);
+    console.log('stopped timer');
+  }
+
+
+}
+
+
