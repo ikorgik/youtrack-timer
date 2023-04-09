@@ -47,7 +47,7 @@ const YouTrackAPI = {
             if (response.ok) {
                 const workItems = await response.json();
                 workItems.forEach((element, index) => {
-                    if (element.text.includes(timerId)) {
+                    if (element.text !== null && element.text.includes(timerId)) {
                         activeWorkItem = element;
                         return;
                     }
