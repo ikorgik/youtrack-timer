@@ -34,7 +34,8 @@ const YouTrackAPI = {
         getActive: async function () {
             const fields = 'fields=id,created,issue(id,idReadable,summary),text';
             const currentUserId = YouTrackAPI.currentUser.id;
-            const url = YouTrackAPI.url + '/api/workItems' + `?${fields}` + '&author=me&query=timer_started_user_' + currentUserId + '_';
+            const timerId = `[timer_u${currentUserId}]`
+            const url = YouTrackAPI.url + '/api/workItems' + `?${fields}` + '&author=me&query=' + timerId;
             const response = await fetch(url, {
                 headers: {
                     accept: 'application/json',
@@ -47,7 +48,7 @@ const YouTrackAPI = {
             if (response.ok) {
                 const workItems = await response.json();
                 workItems.forEach((element, index) => {
-                    if (element.text === 'timer_started_user_' + currentUserId + '_') {
+                    if (element.text.includes(timerId)) {
                         activeWorkItem = element;
                         return;
                     }
@@ -90,8 +91,10 @@ const YouTrackAPI = {
         startTimer: async (issueId) => {
             const url = YouTrackAPI.url + `/api/issues/${issueId}/timeTracking/workItems`;
 
+            const text = `(DON'T CHANGE) Timer [timer_u${YouTrackAPI.currentUser.id}] started.`;
             var workData = {
-                text: `timer_started_user_${YouTrackAPI.currentUser.id}_`,
+                text: text,
+                // text: `timer_started_user_${YouTrackAPI.currentUser.id}_`,
                 duration: {
                     minutes: 1
                 },
