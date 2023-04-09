@@ -7,127 +7,75 @@
 body {
   position: relative;
   margin: 0;
-  width: 500px;
+  width: 400px;
   color: rgba(102, 102, 102, 0.85);
   font: bold 16px 'Open Sans', Arial, Helvetica, sans-serif;
 }
-.header {
-  padding: 20px;
-  background-color: #303033;
-  border-bottom: 1px solid #c0bdbd;
-  display: flex;
-  color: #fff;
-  box-shadow: 0 5px 10px rgba(0,0,0,.1);
+.container {
+  background: #F2FAF6;
 }
-.header .extension-title {
-  flex: auto;
-  font-size: 1.1em;
+.label {
+  display: inline-block;
+  min-width: 100px;
 }
-.header .timesheets-link {
-  font-size: 0.9em;
-  margin-top: 4px;
+.time {
+  float: right;
 }
-.header a {
-  color: #fff;
-  text-decoration: underline;
-}
-.header a:hover {
-  color: #ead4e0;
-}
-a {
-  color: #0f5b99;
-  transition: all 0.1s linear;
-  text-decoration: none;
-}
-a:hover {
-  color: #ff008c;
-  text-decoration: underline;
+.time .rest {
+  font-size: 84%;
 }
 
-.content {
-  padding: 20px;
-  background-color: #eff4f7;
-}
-.active-timer-header {
-  display: flex;
-  margin-bottom: 20px;
-}
-.issue-summary {
-  font-size: 1.3em;
-  color: rgba(102, 102, 102, 1);
-}
-.active-timer-header .time {
-  font-size: 1.8em;
-  font-weight: bold;
-  padding: 10px;
-  color: rgba(102, 102, 102, 1);
-}
-.description-field {
-  font-size: 0.9em;
-}
-.description-field textarea {
-  margin-top: 6px;
-  margin-bottom: 14px;
-  padding: 6px 6px;
-  box-sizing: border-box;
-  width: 100%;
-  height: 65px;
-  border: none;
-  color: rgba(102, 102, 102, 0.85);
-  resize: none;
-  outline: none;
-  font: bold 1em 'Open Sans', Arial, Helvetica, sans-serif;
-}
-button {
-  transition: all 0.2s linear;
-  align-items: center;
-  background-clip: padding-box;
-  background-color: #fff;
-  border: 1px solid rgba(29,30,28,.3);
-  border-radius: 8px;
-  color: #1d1e1c;
-  display: inline-flex;
-  font-size: 15px;
-  font-weight: 400;
-  gap: 4px;
-  height: 34px;
-  justify-content: center;
-  line-height: 34px;
-  padding: 0 16px;
-  position: relative;
-  text-decoration: none;
-  vertical-align: middle;
-  white-space: nowrap;
-  width: auto;
-  cursor: pointer;
-  margin-right: 6px;
-}
-button.active {
-  background-clip: border-box;
-  background-color: #c9cfd3;
-  font-weight: 500;
-}
-button:hover {
-  background-color: #1d1e1ce6;
+/* Actions container */
+.actions {
+  position: absolute;
+  top: 4px;
+  right: 3px;
   color: #fff;
+  opacity: 0;
+}
+.actions a {
+  color: #fff;
+}
+.actions .fa {
+  clear: both;
+  position: relative;
+  float: left;
+}
+.actions .fa.fa-times {
+  margin-bottom: 3px;
+  opacity: 0.95;
+}
+.actions .fa.fa-refresh {
+  display: none;
+}
+.actions .fa.fa-refresh,
+.actions .fa.fa-clock-o {
+  font-size: 84%;
+  opacity: 0.9;
+}
+.actions .fa:hover {
+  opacity: 1;
+}
+.actions .fa:active {
+  top: 1px;
 }
 
 /* Loading page */
 .loading-page,
 .error-page,
-.missed-options-page {
+.login-page {
   position: absolute;
-  top: 65px;
+  top: 0;
   right: 0;
   bottom: 0;
   left: 0;
   z-index: 9999;
   display: none;
-  background: #eff4f7;
+  background: #F2FAF6;
 }
 .loading-page.processed,
 .error-page.processed,
-.missed-options-page.processed {
+.login-page.processed {
   display: block;
 }
 .error-page .messages {
@@ -154,18 +102,136 @@ button:hover {
   font-size: 66%;
   opacity: 0.8;
 }
-.loader {
-  border: 10px solid #dfe2e5; /* Light grey */
-  border-top: 10px solid #97b9cd; /* Blue */
-  border-bottom: 10px solid #97b9cd; /* Blue */
-  border-radius: 50%;
-  width: 80px;
-  height: 80px;
-  margin: 60px auto;
-  animation: spin 2s linear infinite;
+
+/* Login page */
+.login-page img {
+  position: absolute;
+  top: 36px;
+  left: calc(50% - 88px);
+  opacity: 0.7;
+}
+.login-page a {
+  position: absolute;
+  bottom: 23px;
+  left: calc(50% - 46px);
+  color: rgba(102, 102, 102, 0.78);
+  text-decoration: none;
+  font-size: 140%;
+}
+.login-page a:hover {
+  text-decoration: underline;
+}
+.login-page a:active {
+  bottom: 22px;
+}
+.login-page a i {
+  margin-right: 5px;
+}
+@-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
+@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+
+/* Current task container */
+.current-task {
+  padding: 14px 24px 8px 16px;
+  width: 100%;
+  border-bottom: 3px solid #ffb506;
+  background: #36C086;
+  color: #fff;
+  opacity: 0;
+}
+.current-task .task-label {
+  width: 1px;
+  white-space: nowrap;
+}
+.current-task .label {
+  overflow: hidden;
+  min-width: 0;
+  max-width: 180px;
+  vertical-align: bottom;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.current-task .task-active i {
+  opacity: 0.9;
+}
+.current-task .task-active {
+  text-align: center;
+}
+.current-task .time {
+  width: 1px;
+  float: none;
+  white-space: nowrap;
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+/* Details container */
+.option-details,
+.details {
+  padding: 10px 16px 2px;
+  box-shadow: inset 0 5px 6px -3px rgba(0, 0, 0, 0.2);
+}
+.details {
+  opacity: 0;
+}
+.option-details .row,
+.details .row {
+  margin: 10px 0;
+}
+.option-working-days,
+.working-days {
+  padding: 10px 16px 8px;
+  border-top: 1px dotted #E2E2E2;
+  font-size: 90%;
+}
+.working-days {
+  opacity: 0;
+}
+.working-days .fa-calendar {
+  position: relative;
+  top: -1px;
+  display: inline-block;
+  margin-right: 4px;
+  opacity: 0.8;
+}
+
+/* Chart */
+.chart {
+  position: relative;
+  margin: 0 auto;
+  width: 110px;
+  height: 110px;
+  text-align: center;
+  line-height: 112px;
+}
+.chart .chart-time {
+  color: #35CF8E;
+  font-size: 180%;
+}
+.chart .chart-label {
+  position: absolute;
+  top: 24px;
+  left: calc(50% - 14px);
+  color: rgba(68, 68, 68, 0.29);
+  font-size: 64%;
+  line-height: normal;
+}
+.chart .chart-limit {
+  position: absolute;
+  right: -29px;
+  bottom: 0;
+  color: #9E9E9E;
+  line-height: normal;
+}
+.chart .chart-rest {
+  position: absolute;
+  bottom: 0;
+  left: -29px;
+  color: #8e8e8e;
+  font-size: 84%;
+  line-height: normal;
+}
+.chart canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
 }

@@ -4,13 +4,14 @@
     const { currentUser, youtrack_url, authToken } = await chrome.storage.sync.get(['youtrack_url', 'currentUser', 'authToken']);
     let workItems = [];
     let activeWorkItem = null;
+    const timerId = `[timer_u${currentUser.id}]`;
 
     try {
       const fields = 'id,created,issue(id,summary),text';
       const url = youtrack_url + '/api/workItems';
 
       workItems = await $.ajax({
-        url: url + '?fields=' + fields + '&author=me&query=timer_started_user_' + currentUser.id + '_',
+        url: url + '?fields=' + fields + '&author=me&query=' + timerId,
         headers: {
           accept: 'application/json',
           authorization: 'Bearer ' + authToken
@@ -25,7 +26,7 @@
     }
 
     $.each(workItems, async function(key, value) {
-      if (value.text === 'timer_started_user_' + currentUser.id + '_') {
+      if (value.text.includes(timerId)) {
         activeWorkItem = value;
          await chrome.storage.sync.set({
           activeWorkItem: value
