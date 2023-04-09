@@ -1,6 +1,3 @@
-
-import YouTrack from './modules/api2.js';
-
 (function ($) {
 
   async function initPopup() {

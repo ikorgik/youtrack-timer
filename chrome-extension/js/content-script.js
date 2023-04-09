@@ -6,8 +6,6 @@ const issuePageShown = (mutationList, observer) => {
       const issueContainer = document.querySelector(".yt-issue-view:not(.tracker-button-initialized)");
       if (issueContainer !== null) {
         issueContainer.classList.add('tracker-button-initialized');
-
-        console.log("overlayContainer", issueContainer);
         addButtonToToolbar(issueContainer);
       }
     }
@@ -47,29 +45,26 @@ const addButtonToToolbar = async (issueContainer) => {
   }
   issueToolbar.appendChild(timerButton);
   timerButton.addEventListener("click", timerButtonClick);
-  console.log('buttonIsActive', buttonIsActive)
 }
 
 const timerButtonClick = async (event) => {
   const { currentUser, youtrack_url, authToken } = await chrome.storage.sync.get(['youtrack_url', 'currentUser', 'authToken']);
   YouTrackAPI.init({ currentUser, youtrack_url, authToken });
-  const stopWorkItem = await YouTrackAPI.workItems.stopActive();
-  console.log('stopActive', stopWorkItem);
+
+  // Stop any active timers.
+  await YouTrackAPI.workItems.stopActive();
 
   const buttonIsActive = parseInt(event.target.getAttribute('data-timer-active'));
   const issueId = event.target.getAttribute('data-issue-id');
-  console.log('buttonState', buttonIsActive, issueId)
 
   if (!buttonIsActive) {
     const activeWorkItem = await YouTrackAPI.workItems.startTimer(issueId);
     event.target.innerHTML = 'Stop timer';
     event.target.setAttribute('data-timer-active', 1);
-    console.log('started new timer', activeWorkItem);
   }
   else {
     event.target.innerHTML = 'Start timer';
     event.target.setAttribute('data-timer-active', 0);
-    console.log('stopped timer');
   }
 
 

@@ -58,7 +58,6 @@ const YouTrackAPI = {
         stopActive: async () => {
             const activeWorkItem = await YouTrackAPI.workItems.getActive();
             if (activeWorkItem === null) {
-                console.error('No active timers to stop.');
                 return null;
             }
 
@@ -66,11 +65,12 @@ const YouTrackAPI = {
             const issueId = activeWorkItem.issue.id;
             const url = YouTrackAPI.url + `/api/issues/${issueId}/timeTracking/workItems/${itemId}`;
             const totalTime = Date.now() - activeWorkItem.created;
+            const minutes = parseInt((totalTime / 1000 / 60).toFixed());
 
             var workData = {
                 text: activeWorkItem.issue.summary,
                 duration: {
-                    minutes: parseInt((totalTime / 1000 / 60).toFixed())
+                    minutes: minutes < 1 ? 1 : minutes,
                 },
                 // worktype: {name: entry.task} // @todo: add worktype support.
             }

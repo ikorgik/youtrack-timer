@@ -4,7 +4,7 @@
     <meta charset='utf-8'>
 </head>
 <body>
-<link rel="stylesheet" href="options.css" />
+<link rel="stylesheet" href="css/options.css" />
 <!-- TODO label styles with animation -->
 <form>
     <label><span>Youtrack server domain</span>
@@ -14,15 +14,12 @@
     <label><span>Youtrack authentication token</span>
         <input name="youtrack_token" id="youtrack_token" type="text" placeholder="perm:XXXXXX" />
     </label>
-    <label class="hidden-input"><span>@todo: Link to the token generation page.</span></label>
+    <label class="hidden-input"><span>Go to Your Profile > Account Security > Tokens and generate a new token.</span></label>
     <input type="submit" value="Save" />
     <!-- TODO clear -->
     <span id="status"></span>
 </form>
 
-<script src="/js/lib/require.js"></script>
-<script src="/js/requireConfig.js"></script>
-<script src="/js/lib/jquery-ajax-sizzle.min.js"></script>
 <script src="/js/options.js"></script>
 </body>
 </html>

@@ -2,18 +2,16 @@
   "content_scripts": [
     {
       "js": [
-        "js/modules/api.js",
+        "js/api.js",
         "js/content-script.js"
       ],
       "matches": [
         "https://*.youtrack.cloud/*"
       ],
-      "css": [
-        "css/yt-timer.css"
-      ]
+      "css": []
     }
   ],
-  "description": "This extension adds Time Tracker for YouTrack.",
+  "description": "Allows to track YouTrack time via button.",
   "icons": {
     "128": "images/h-app@128px.png",
     "16": "images/h-app@16px.png",
@@ -22,17 +20,15 @@
   "manifest_version": 3,
   "name": "YouTrack Time Tracker",
   "permissions": [
-    "https://accounts.google.com/*",
     "https://*.youtrack.cloud/*",
-    "storage",
-    "alarms"
+    "storage"
   ],
   "action": {
     "default_popup": "popup.html"
   },
   "options_ui": {
-    "page": "options/options.html"
+    "page": "options.html"
   },
   "update_url": "https://clients2.google.com/service/update2/crx",
-  "version": "2.5.9.1"
+  "version": "1.0.1"
 }
