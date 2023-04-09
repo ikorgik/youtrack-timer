@@ -23,10 +23,9 @@ const YouTrackAPI = {
             });
 
             if (response.ok) {
-                const payload = await response.json();
-                console.log('getCurrent', payload);
-                return payload;
+                return await response.json();
             }
+            return null;
         }
     },
 

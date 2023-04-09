@@ -64,3 +64,6 @@ label input {
     padding-right: 25px !important;
     transition: box-shadow .3s ease-in-out;
 }
+#status {
+    margin-top: 10px;
+}

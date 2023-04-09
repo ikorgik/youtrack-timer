@@ -1,62 +1,42 @@
-requirejs.config(requirejsConfig);
-requirejs(['jquery', 'api'],
-function ($, api) {
+const restoreOptions = async () => {
+    const { youtrack_url, authToken } = await chrome.storage.sync.get(['youtrack_url', 'authToken']);
+    document.getElementById('youtrack_url').value = youtrack_url;
+    document.getElementById('youtrack_token').value = authToken;
+}
 
-  var $youtrackUrl = $('#youtrack_url')
-  var $youtrackAuth = $('#youtrack_token')
+const saveOptions = async (event) => {
+    event.preventDefault();
 
-  function toggleState ($el, state) {
-    $el.parent('label').removeClass('error success').addClass(state)
-  }
+    const youtrack_url = document.getElementById('youtrack_url').value;
+    const authToken = document.getElementById('youtrack_token').value;
 
-// Saves options to chrome.storage
-  function saveOptions(e) {
-    e.preventDefault()
+    await chrome.storage.sync.set({
+        youtrack_url,
+        authToken
+    });
 
-    chrome.storage.sync.set({
-      youtrack_url: $youtrackUrl.val(),
-      authToken: $youtrackAuth.val()
-    }, function () {
-      api.reInitOptions(function () {
+    YouTrackAPI.init({ youtrack_url, authToken });
 
-        api.youtrack.users.getCurrent(function (currentUser) {
-          toggleState($youtrackUrl, 'success');
+    // Stop any active timers.
+    const currentUser = await YouTrackAPI.users.getCurrent();
 
-          // Save current user to the storage.
-          chrome.storage.sync.set({
+    if (currentUser !== null) {
+        // Save current user to the storage.
+        await chrome.storage.sync.set({
             currentUser: currentUser
-          });
+        });
 
-        }, function (xhr) {
-          if (xhr.status == 401) {
-            toggleState($youtrackAuth, 'error')
-            toggleState($youtrackUrl, 'success')
-          } else {
-            toggleState($youtrackUrl, 'error')
-          }
-        })
-      })
+        // Update status to let user know options were saved.
+        document.getElementById('status').innerHTML = 'Successfully connected to YouTrack server.';
+        document.getElementById('status').style.color = 'green';
+    }
+    else {
+        document.getElementById('status').innerHTML = "There is a problem connecting to YouTrack server. Check parameters and try again.";
+        document.getElementById('status').style.color = 'red';
+    }
+}
 
-      // Update status to let user know options were saved.
-      var status = $('#status');
-      status.text('Options saved.');
-      setTimeout(function () {
-        status.text('');
-      }, 750);
-    });
-  }
+restoreOptions();
 
-// Restores select box and checkbox state using the preferences
-// stored in chrome.storage.
-  function restoreOptions() {
-    // Use default values
-    chrome.storage.sync.get({
-      youtrack_url: ''
-    }, function (items) {
-      $youtrackUrl.val(items.youtrack_url);
-    });
-  }
-
-  restoreOptions()
-  $('form').submit(saveOptions)
-});
+// Save button click.
+document.getElementById('options-form').addEventListener('submit', saveOptions);
