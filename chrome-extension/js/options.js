@@ -3,7 +3,7 @@ requirejs(['jquery', 'api'],
 function ($, api) {
 
   var $youtrackUrl = $('#youtrack_url')
-  var $youtrackAuth = $('#youtrack_auth')
+  var $youtrackAuth = $('#youtrack_token')
 
   function toggleState ($el, state) {
     $el.parent('label').removeClass('error success').addClass(state)
@@ -14,11 +14,12 @@ function ($, api) {
     e.preventDefault()
 
     chrome.storage.sync.set({
-      youtrack_url: $youtrackUrl.val()
+      youtrack_url: $youtrackUrl.val(),
+      authToken: $youtrackAuth.val()
     }, function () {
       api.reInitOptions(function () {
 
-        api.youtrack.currentUser.get(function (currentUser) {
+        api.youtrack.users.getCurrent(function (currentUser) {
           toggleState($youtrackUrl, 'success');
 
           // Save current user to the storage.

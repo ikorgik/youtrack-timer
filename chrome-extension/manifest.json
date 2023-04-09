@@ -18,16 +18,7 @@
     "16": "images/h-app@16px.png",
     "48": "images/h-app@48px.png"
   },
-  "manifest_version": 2,
-  "background": {
-    "scripts": [
-      "js/lib/require.js",
-      "js/requireConfig.js",
-      "js/lib/jquery-ajax-sizzle.min.js",
-      "js/eventPage.js",
-      "js/popup.js"
-    ]
-  },
+  "manifest_version": 3,
   "name": "YouTrack Time Tracker",
   "permissions": [
     "https://accounts.google.com/*",
@@ -35,14 +26,11 @@
     "storage",
     "alarms"
   ],
-  "browser_action": {
-    "default_icon": "images/h-app@128px.png",
-    "default_title": "instant sync",
+  "action": {
     "default_popup": "popup.html"
   },
   "options_ui": {
-    "page": "options/options.html",
-    "chrome_style": true
+    "page": "options/options.html"
   },
   "update_url": "https://clients2.google.com/service/update2/crx",
   "version": "2.5.9.1"

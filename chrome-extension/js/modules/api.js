@@ -2,27 +2,25 @@ define(['jquery', 'utils'],
 function ($, utils) {
   var youtrack = {
     url: utils._f,
-    auth: 'perm:c2tvcnpo.NTUtMg==.bgRklWEwpyCzp3hHMrH5bfg60RKsMb' // @todo: Add an interface to add token
+    auth: 'perm:c2tvcnpo.NTUtMg==.bgRklWEwpyCzp3hHMrH5bfg60RKsMb', // @todo: Add an interface to add token
+    currentUser: null
     // see: https://www.jetbrains.com/help/youtrack/devportal/Manage-Permanent-Token.html
     // see: https://www.jetbrains.com/help/youtrack/devportal/authentication-with-permanent-token.html
   }
 
-  var harvest = {
-    url: utils._f,
-    auth: utils._f
-  }
-
   function reInitOptions (cb) {
-    chrome.storage.sync.get(['youtrack_url'], function (data) {
+    chrome.storage.sync.get(['youtrack_url', 'currentUser'], function (data) {
       youtrack.url = function (clean) { return data.youtrack_url + (clean ? '' : '/api/') }
-
+      youtrack.currentUser = data.currentUser;
+      console.log('reInitOptions')
       ;(cb || utils._f)()
     })
   }
-  reInitOptions()
+  //reInitOptions()
 
   function isOptionsPresent() {
-    return youtrack.url()
+    console.log('youtrack', youtrack);
+    return youtrack.url() && youtrack.currentUser;
   }
 
   // used to check YT url
@@ -44,12 +42,36 @@ function ($, utils) {
       }
   }
 
+  // used to check YT url
+  youtrack.workItems = {
+      url: function () {
+        return this.url() + 'workItems'
+      }.bind(youtrack),
+      getStarted: function (success, error) {
+        const fields = 'id,created,issue(id,summary),text';
+        const currentUserId = youtrack.currentUser.id;
+        // const currentUser = chrome.storage.sync.get("currentUser");
+        console.log('currentUserAsync', currentUserId);
+
+        $.ajax({
+          url: this.url() + '?fields=' + fields + '&author=me&query=timer_started_user_' + currentUserId + '_',
+          headers: {
+            accept: 'application/json',
+            authorization: 'Bearer ' + youtrack.auth
+          },
+          success: success,
+          error: error,
+          dataType: 'json',
+        })
+      }
+  }
+
   // Get current user data.
-  youtrack.currentUser = {
+  youtrack.users = {
       url: function () {
         return this.url() + 'users/me'
       }.bind(youtrack),
-      get: function (success, error) {
+      getCurrent: function (success, error) {
         $.ajax({
           url: this.url() + '?fields=id,fullName',
           headers: {

@@ -5,8 +5,12 @@
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/font-awesome/css/font-awesome.min.css">
     <script src="js/lib/jquery.min.js"></script>
+<!--    <script src="js/lib/jquery-ajax-sizzle.min.js"></script>-->
+    <script src="js/lib/require.js"></script>
+    <script src="js/requireConfig.js"></script>
     <script src="js/jquery.easypiechart.min.js"></script>
-<!--    <script src="js/popup.js"></script>-->
+    <script src="js/modules/api2.js" type="module"></script>
+    <script src="js/popup.js" type="module"></script>
   </head>
   <body>
     <div class="container">
@@ -36,28 +40,12 @@
           <tr>
         </table>
 
-        <div class="details">
-          <div class="chart" data-percent="73">
-            <span class="chart-label">Today</span>
-            <span class="chart-time"></span>
-            <span class="chart-limit"></span>
-            <span class="chart-rest"></span>
-          </div>
-
-          <div class="week row">
-            <span class="label">Week</span>
-            <span class="time"></span>
-          </div>
-          <div class="month row">
-            <span class="label">Month</span>
-            <span class="time"></span>
-          </div>
+        <div class="active-tracking">
+          <div class="label"></div>
+          <div class="time"></div>
+          <span class="button"><i class="fa"></i></span>
         </div>
 
-        <div class="working-days">
-          <span class="label"><i class="fa fa-calendar"></i>Working days</span>
-          <span class="time"></span>
-        </div>
       </div>
     </div>
 
