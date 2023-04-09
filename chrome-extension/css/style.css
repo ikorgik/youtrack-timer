@@ -63,6 +63,9 @@ a:hover {
   margin-bottom: 20px;
   min-height: 60px;
 }
+.issue-header {
+  flex: 1 1 80px;
+}
 .issue-summary {
   font-size: 1.3em;
   color: rgba(102, 102, 102, 1);

@@ -13,9 +13,9 @@
   ],
   "description": "Allows to track YouTrack time via button.",
   "icons": {
-    "128": "images/h-app@128px.png",
-    "16": "images/h-app@16px.png",
-    "48": "images/h-app@48px.png"
+    "128": "images/youtrack-timer@128px.png",
+    "16": "images/youtrack-timer@16px.png",
+    "48": "images/youtrack-timer@48px.png"
   },
   "manifest_version": 3,
   "name": "YouTrack Time Tracker",
@@ -24,6 +24,11 @@
     "storage"
   ],
   "action": {
+    "default_icon": {
+      "19": "images/youtrack-timer-toolbar-off@19px.png",
+      "38": "images/youtrack-timer-toolbar-off@38px.png"
+    },
+    "default_title": "Start a YouTrack timer",
     "default_popup": "popup.html"
   },
   "options_ui": {

@@ -69,7 +69,7 @@ const YouTrackAPI = {
             const minutes = parseInt((totalTime / 1000 / 60).toFixed());
 
             var workData = {
-                text: description || activeWorkItem.issue.summary,
+                text: description ? description.replace( /(<([^>]+)>)/ig, '') : activeWorkItem.issue.summary,
                 duration: {
                     minutes: minutes < 1 ? 1 : minutes,
                 },
@@ -92,7 +92,7 @@ const YouTrackAPI = {
             const url = YouTrackAPI.url + `/api/issues/${issueId}/timeTracking/workItems`;
 
             const text = `(DON'T CHANGE) Timer [timer_u${YouTrackAPI.currentUser.id}] started.`;
-            var workData = {
+            const workData = {
                 text: text,
                 // text: `timer_started_user_${YouTrackAPI.currentUser.id}_`,
                 duration: {
