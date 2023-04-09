@@ -13,7 +13,7 @@
       ]
     }
   ],
-  "description": "Adds Start/Stop button to track YouTrack time.",
+  "description": "Adds Start/Stop button to track time in YouTrack.",
   "icons": {
     "128": "images/youtrack-timer@128px.png",
     "16": "images/youtrack-timer@16px.png",
