@@ -1,9 +1,15 @@
 
 const initPopup = async () => {
+  let activeWorkItem = null;
   const { currentUser, youtrack_url, authToken } = await chrome.storage.sync.get(['youtrack_url', 'currentUser', 'authToken']);
   YouTrackAPI.init({ currentUser, youtrack_url, authToken });
 
-  const activeWorkItem = await YouTrackAPI.workItems.getActive();
+  try {
+    activeWorkItem = await YouTrackAPI.workItems.getActive();
+  }
+  catch (e) {
+    document.getElementsByClassName('missed-options-page')[0].style.display = 'block';
+  }
 
   if (activeWorkItem === null) {
     document.getElementsByClassName('no-active-timers')[0].style.display = 'block';

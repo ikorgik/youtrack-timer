@@ -7,6 +7,7 @@ const restoreOptions = async () => {
 const saveOptions = async (event) => {
     event.preventDefault();
 
+    let currentUser = null;
     const youtrack_url = document.getElementById('youtrack_url').value;
     const authToken = document.getElementById('youtrack_token').value;
 
@@ -17,8 +18,12 @@ const saveOptions = async (event) => {
 
     YouTrackAPI.init({ youtrack_url, authToken });
 
-    // Stop any active timers.
-    const currentUser = await YouTrackAPI.users.getCurrent();
+    try {
+        currentUser = await YouTrackAPI.users.getCurrent();
+    }
+    catch (e) {
+        console.error(e);
+    }
 
     if (currentUser !== null) {
         // Save current user to the storage.
