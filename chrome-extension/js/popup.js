@@ -11,6 +11,8 @@ const initPopup = async () => {
     document.getElementsByClassName('missed-options-page')[0].style.display = 'block';
   }
 
+  document.getElementsByClassName('timesheets-link')[0].href = document.getElementsByClassName('timesheets-link')[0].href.replace('https://_host_', youtrack_url);
+
   if (activeWorkItem === null) {
     document.getElementsByClassName('no-active-timers')[0].style.display = 'block';
 
@@ -23,6 +25,12 @@ const initPopup = async () => {
     const minutes = Math.floor((total % (1000 * 60 * 60)) / (1000 * 60));
     const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
 
+    console.log(document.getElementsByClassName('issue-id')[0].href)
+
+    document.getElementsByClassName('issue-id')[0].innerHTML = activeWorkItem.issue.idReadable;
+    document.getElementsByClassName('issue-id')[0].href = document.getElementsByClassName('issue-id')[0].href
+        .replace('https://_host_', youtrack_url)
+        .replace('_issue_id_', activeWorkItem.issue.idReadable);
     document.getElementsByClassName('issue-summary')[0].innerHTML = activeWorkItem.issue.summary;
     document.getElementsByClassName('project')[0].innerHTML = activeWorkItem.issue.project.name;
     document.getElementsByClassName('time')[0].innerHTML = formattedHours + ':' + formattedMinutes;

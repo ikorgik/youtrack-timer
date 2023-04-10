@@ -23,7 +23,7 @@ body {
   flex: auto;
   font-size: 1.1em;
 }
-.header .timesheets-link {
+.header .timesheets-link-container {
   font-size: 0.9em;
   margin-top: 4px;
 }
@@ -65,6 +65,9 @@ a:hover {
 }
 .issue-header {
   flex: 1 1 80px;
+}
+.issue-id {
+  font-size: 1.1em;
 }
 .issue-summary {
   font-size: 1.3em;
