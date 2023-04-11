@@ -93,7 +93,6 @@ const YouTrackAPI = {
             const text = `(DON'T CHANGE) Timer [timer_u${YouTrackAPI.currentUser.id}] started.`;
             const workData = {
                 text: text,
-                // text: `timer_started_user_${YouTrackAPI.currentUser.id}_`,
                 duration: {
                     minutes: 1
                 },

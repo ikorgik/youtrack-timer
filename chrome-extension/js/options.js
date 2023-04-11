@@ -1,7 +1,7 @@
 const restoreOptions = async () => {
     const { youtrack_url, authToken } = await chrome.storage.sync.get(['youtrack_url', 'authToken']);
-    document.getElementById('youtrack_url').value = youtrack_url;
-    document.getElementById('youtrack_token').value = authToken;
+    document.getElementById('youtrack_url').value = youtrack_url || '';
+    document.getElementById('youtrack_token').value = authToken || '';
 }
 
 const saveOptions = async (event) => {
