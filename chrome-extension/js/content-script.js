@@ -24,8 +24,7 @@ const createButtonElement = () => {
   button.type = 'button';
   button.classList.add('youtrack-timer-button');
   button.classList.add('button_aba4');
-  button.classList.add('button_fc1d');
-  button.classList.add('light_b3b0');
+  button.classList.add('heightS_b28d');
   button.innerHTML = 'Start timer';
   return button;
 };
