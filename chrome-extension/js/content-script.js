@@ -3,7 +3,7 @@
 const issuePageShown = (mutationList, observer) => {
   for (const mutation of mutationList) {
     if (mutation.type === "childList") {
-      const issueContainer = document.querySelector(".yt-issue-view:not(.tracker-button-initialized)");
+      const issueContainer = document.querySelector("[class^=ticketContent__]:not(.tracker-button-initialized)");
       if (issueContainer !== null) {
         issueContainer.classList.add('tracker-button-initialized');
         addButtonToToolbar(issueContainer);
@@ -30,9 +30,9 @@ const createButtonElement = () => {
 };
 
 const addButtonToToolbar = async (issueContainer) => {
-  const issueToolbar = issueContainer.querySelector(".yt-issue-toolbar");
+  const issueToolbar = issueContainer.querySelector("[class^=summaryToolbar__] div");
 
-  const issueId = issueContainer.querySelector(".js-issue-id").textContent
+  const issueId = issueContainer.querySelector("[class^=idLink__]").textContent
   const { currentUser, youtrack_url, authToken } = await chrome.storage.sync.get(['youtrack_url', 'currentUser', 'authToken']);
   YouTrackAPI.init({ currentUser, youtrack_url, authToken });
   const activeWorkItem = await YouTrackAPI.workItems.getActive();

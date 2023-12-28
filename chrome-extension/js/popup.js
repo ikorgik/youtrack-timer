@@ -25,8 +25,6 @@ const initPopup = async () => {
     const minutes = Math.floor((total % (1000 * 60 * 60)) / (1000 * 60));
     const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
 
-    console.log(document.getElementsByClassName('issue-id')[0].href)
-
     document.getElementsByClassName('issue-id')[0].innerHTML = activeWorkItem.issue.idReadable;
     document.getElementsByClassName('issue-id')[0].href = document.getElementsByClassName('issue-id')[0].href
         .replace('https://_host_', youtrack_url)
