@@ -3,6 +3,7 @@ const initPopup = async () => {
   let activeWorkItem = null;
   let recentWorkItems = [];
   let favoriteIssues = [];
+  let todaysWorkItems = [];
   const { currentUser, youtrack_url, authToken, youtrackFavorite } = await chrome.storage.sync.get(['youtrack_url', 'currentUser', 'authToken', 'youtrackFavorite']);
   YouTrackAPI.init({ currentUser, youtrack_url, authToken });
 
@@ -11,6 +12,9 @@ const initPopup = async () => {
     activeWorkItem = await YouTrackAPI.workItems.getActive();
     recentWorkItems = await YouTrackAPI.workItems.getRecentIssues();
     favoriteIssues = await YouTrackAPI.issues.getByIds(youtrackFavorite);
+
+    const today = new Date().setHours(0,0,0,0);
+    todaysWorkItems = await YouTrackAPI.workItems.getRecent(today);
   }
   catch (e) {
     document.getElementsByClassName('missed-options-page')[0].style.display = 'block';
@@ -34,6 +38,8 @@ const initPopup = async () => {
   if (youtrackFavorite !== '' && youtrackFavorite !== undefined) {
     showFavoriteIssues(favoriteIssues, recentWorkItems);
   }
+
+  updateTrackedTodayTime(todaysWorkItems, activeWorkItem);
 
   document.getElementsByClassName('loading-page')[0].style.display = 'none';
 };
@@ -89,6 +95,21 @@ const showActiveTimer = (activeWorkItem, youtrack_url) => {
 
   document.getElementsByClassName('stop-timer')[0].addEventListener("click", stopButtonClick);
   document.getElementsByClassName('cancel')[0].addEventListener("click", () => { window.close(); });
+}
+
+const updateTrackedTodayTime = (todaysWorkItems, activeWorkItem) => {
+  let todaysMinutes = 0;
+  todaysWorkItems.forEach((issue) => {
+    todaysMinutes += issue.duration.minutes;
+  });
+
+  const total = (todaysMinutes + activeWorkItem.duration.minutes) * 60 * 1000;
+  const hours = Math.floor((total % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const formattedHours = hours < 10 ? '0' + hours : hours;
+  const minutes = Math.floor((total % (1000 * 60 * 60)) / (1000 * 60));
+  const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+
+  document.getElementsByClassName('today-time')[0].innerHTML = formattedHours + ':' + formattedMinutes;
 }
 
 const showFavoriteIssues = (favoriteIssues, recentWorkItems) => {

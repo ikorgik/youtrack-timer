@@ -52,7 +52,7 @@ const YouTrackAPI = {
 
     workItems: {
         getActive: async function () {
-            const fields = 'fields=id,created,issue(id,idReadable,summary,project(id,name)),text';
+            const fields = 'fields=id,created,issue(id,idReadable,summary,project(id,name)),duration(presentation,minutes),text';
             const currentUserId = YouTrackAPI.currentUser.id;
             const timerId = `[timer_u${currentUserId}]`
             const url = YouTrackAPI.url + '/api/workItems' + `?${fields}` + '&author=me&query=' + timerId;
@@ -77,8 +77,8 @@ const YouTrackAPI = {
             return activeWorkItem;
         },
         getRecent: async function (startPeriod) {
-            const fields = 'fields=id,created,issue(id,idReadable,summary),text';
-            const url = YouTrackAPI.url + '/api/workItems' + `?${fields}` + '&author=me&createdStart=' + startPeriod;
+            const fields = 'fields=id,created,issue(id,idReadable,summary),duration(presentation,minutes),text';
+            const url = YouTrackAPI.url + '/api/workItems' + `?${fields}` + '&author=me&createdStart=' + startPeriod + '&query=sort by: created desc';
             const response = await fetch(url, {
                 headers: {
                     accept: 'application/json',
