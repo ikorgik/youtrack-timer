@@ -77,7 +77,7 @@ const YouTrackAPI = {
             return activeWorkItem;
         },
         getRecent: async function (startPeriod) {
-            const fields = 'fields=id,created,issue(id,idReadable,summary),duration(presentation,minutes),text';
+            const fields = 'fields=id,created,issue(id,idReadable,summary,updated),duration(presentation,minutes),text';
             const url = YouTrackAPI.url + '/api/workItems' + `?${fields}` + '&author=me&createdStart=' + startPeriod + '&query=sort by: created desc';
             const response = await fetch(url, {
                 headers: {
@@ -105,6 +105,8 @@ const YouTrackAPI = {
                     uniqueWorkItemIssues.push(workItem.issue);
                 }
             });
+
+            uniqueWorkItemIssues.sort((a, b) => b.updated - a.updated);
 
             return uniqueWorkItemIssues;
         },

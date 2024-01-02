@@ -103,7 +103,7 @@ const updateTrackedTodayTime = (todaysWorkItems, activeWorkItem) => {
     todaysMinutes += issue.duration.minutes;
   });
 
-  const activeWorkItemDuration = Date.now() - activeWorkItem.created;
+  const activeWorkItemDuration = activeWorkItem !== null ? Date.now() - activeWorkItem.created : 0;
   const total = todaysMinutes * 60 * 1000 + activeWorkItemDuration;
   const hours = Math.floor((total % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
   const formattedHours = hours < 10 ? '0' + hours : hours;
