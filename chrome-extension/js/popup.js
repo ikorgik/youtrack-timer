@@ -26,58 +26,13 @@ const initPopup = async () => {
   else {
     document.getElementsByClassName('no-active-timers')[0].style.display = 'none';
 
-    const total = Date.now() - activeWorkItem.created;
-    const hours = Math.floor((total % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const formattedHours = hours < 10 ? '0' + hours : hours;
-    const minutes = Math.floor((total % (1000 * 60 * 60)) / (1000 * 60));
-    const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
-
-    document.getElementsByClassName('issue-id')[0].innerHTML = activeWorkItem.issue.idReadable;
-    document.getElementsByClassName('issue-id')[0].href = document.getElementsByClassName('issue-id')[0].href
-        .replace('https://_host_', youtrack_url)
-        .replace('_issue_id_', activeWorkItem.issue.idReadable);
-    document.getElementsByClassName('issue-summary')[0].innerHTML = activeWorkItem.issue.summary;
-    document.getElementsByClassName('project')[0].innerHTML = activeWorkItem.issue.project.name;
-    document.getElementsByClassName('time')[0].innerHTML = formattedHours + ':' + formattedMinutes;
-
-    document.getElementsByClassName('active-timer')[0].style.display = 'block';
-
-    document.getElementsByClassName('stop-timer')[0].addEventListener("click", stopButtonClick);
-    document.getElementsByClassName('cancel')[0].addEventListener("click", () => { window.close(); });
+    showActiveTimer(activeWorkItem, youtrack_url);
 
     await chrome.runtime.sendMessage({ timer_status: 'on' });
   }
 
-  // Output list of favorite issues.
-  const favoriteToolbar = document.querySelector(".favorite-issues:not(.initialized)");
-  if (youtrackFavorite !== '' && youtrackFavorite !== undefined && favoriteToolbar !== null) {
-    favoriteToolbar.classList.add('initialized');
-    const issuesList = favoriteIssues;
-
-    recentWorkItems.forEach((issue) => {
-      let index = favoriteIssues.findIndex((item) => item.id === issue.id);
-      if (index === -1) {
-        issuesList.push(issue);
-      }
-    });
-
-    issuesList.forEach((issue) => {
-      let timerButton = document.createElement('a');
-      // timerButton.type = 'button';
-      timerButton.classList.add('youtrack-timer-button');
-      timerButton.innerHTML = issue.idReadable + ' ' + issue.summary;
-      if (timerButton.innerHTML.length > 58) {
-        timerButton.innerHTML = timerButton.innerHTML.slice(0, 58).trim() + '...';
-      }
-
-      timerButton.setAttribute('data-issue-id', issue.idReadable);
-
-      let listItem = document.createElement('div');
-      listItem.appendChild(timerButton);
-
-      favoriteToolbar.appendChild(listItem);
-      timerButton.addEventListener('click', timerButtonClick);
-    });
+  if (youtrackFavorite !== '' && youtrackFavorite !== undefined) {
+    showFavoriteIssues(favoriteIssues, recentWorkItems);
   }
 
   document.getElementsByClassName('loading-page')[0].style.display = 'none';
@@ -114,6 +69,64 @@ const timerButtonClick = async (event) => {
   event.target.disabled = false;
   initPopup();
 }
+
+const showActiveTimer = (activeWorkItem, youtrack_url) => {
+  const total = Date.now() - activeWorkItem.created;
+  const hours = Math.floor((total % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const formattedHours = hours < 10 ? '0' + hours : hours;
+  const minutes = Math.floor((total % (1000 * 60 * 60)) / (1000 * 60));
+  const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+
+  document.getElementsByClassName('issue-id')[0].innerHTML = activeWorkItem.issue.idReadable;
+  document.getElementsByClassName('issue-id')[0].href = document.getElementsByClassName('issue-id')[0].href
+      .replace('https://_host_', youtrack_url)
+      .replace('_issue_id_', activeWorkItem.issue.idReadable);
+  document.getElementsByClassName('issue-summary')[0].innerHTML = activeWorkItem.issue.summary;
+  document.getElementsByClassName('project')[0].innerHTML = activeWorkItem.issue.project.name;
+  document.getElementsByClassName('time')[0].innerHTML = formattedHours + ':' + formattedMinutes;
+
+  document.getElementsByClassName('active-timer')[0].style.display = 'block';
+
+  document.getElementsByClassName('stop-timer')[0].addEventListener("click", stopButtonClick);
+  document.getElementsByClassName('cancel')[0].addEventListener("click", () => { window.close(); });
+}
+
+const showFavoriteIssues = (favoriteIssues, recentWorkItems) => {
+  // Output list of favorite issues.
+  const favoriteToolbar = document.querySelector(".favorite-issues:not(.initialized)");
+  if (favoriteToolbar === null) {
+    return;
+  }
+
+  favoriteToolbar.classList.add('initialized');
+  const issuesList = favoriteIssues;
+
+  recentWorkItems.forEach((issue) => {
+    let index = favoriteIssues.findIndex((item) => item.id === issue.id);
+    if (index === -1) {
+      issuesList.push(issue);
+    }
+  });
+
+  issuesList.forEach((issue) => {
+    let timerButton = document.createElement('a');
+    // timerButton.type = 'button';
+    timerButton.classList.add('youtrack-timer-button');
+    timerButton.innerHTML = issue.idReadable + ' ' + issue.summary;
+    if (timerButton.innerHTML.length > 58) {
+      timerButton.innerHTML = timerButton.innerHTML.slice(0, 58).trim() + '...';
+    }
+
+    timerButton.setAttribute('data-issue-id', issue.idReadable);
+
+    let listItem = document.createElement('div');
+    listItem.appendChild(timerButton);
+
+    favoriteToolbar.appendChild(listItem);
+    timerButton.addEventListener('click', timerButtonClick);
+  });
+}
+
 
 window.addEventListener("DOMContentLoaded", (event) => {
   // Initialize popup when opened.

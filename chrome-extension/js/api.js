@@ -76,9 +76,8 @@ const YouTrackAPI = {
             }
             return activeWorkItem;
         },
-        getRecentIssues: async function () {
+        getRecent: async function (startPeriod) {
             const fields = 'fields=id,created,issue(id,idReadable,summary),text';
-            const startPeriod = Date.now() - 2 * 86400 * 1000; // Get two last days.
             const url = YouTrackAPI.url + '/api/workItems' + `?${fields}` + '&author=me&createdStart=' + startPeriod;
             const response = await fetch(url, {
                 headers: {
@@ -88,19 +87,25 @@ const YouTrackAPI = {
                 method: 'GET',
             });
 
-            let workItems = null;
-            const uniqueWorkItemIssues = [];
+            let workItems = [];
             if (response.ok) {
                 workItems = await response.json();
-
-                workItems.forEach((workItem) => {
-                    let index = uniqueWorkItemIssues.findIndex((item) => item.id === workItem.issue.id);
-                    if (index === -1) {
-                        // If not found, push a new object with the desired properties
-                        uniqueWorkItemIssues.push(workItem.issue);
-                    }
-                });
             }
+            return workItems;
+        },
+        getRecentIssues: async function () {
+            const startPeriod = Date.now() - 2 * 86400 * 1000; // Get two last days.
+            const workItems = await YouTrackAPI.workItems.getRecent(startPeriod);
+
+            const uniqueWorkItemIssues = [];
+            workItems.forEach((workItem) => {
+                let index = uniqueWorkItemIssues.findIndex((item) => item.id === workItem.issue.id);
+                if (index === -1) {
+                    // If not found, push a new object with the desired properties
+                    uniqueWorkItemIssues.push(workItem.issue);
+                }
+            });
+
             return uniqueWorkItemIssues;
         },
         stopActive: async (description = '') => {
