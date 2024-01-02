@@ -17,15 +17,31 @@ body {
   border-bottom: 1px solid #c0bdbd;
   display: flex;
   color: #fff;
+  height: 24px;
   box-shadow: 0 5px 10px rgba(0,0,0,.1);
 }
 .header .extension-title {
   flex: auto;
   font-size: 1.1em;
 }
+.tracked-today {
+  flex: auto;
+  text-align: center;
+  margin-top: -10px;
+}
+.tracked-today .label {
+  font-size: 8px;
+  display: block;
+  margin-bottom: -6px;
+}
+.tracked-today .time {
+  font-size: 28px;
+}
 .header .timesheets-link-container {
   font-size: 0.9em;
   margin-top: 4px;
+  flex: auto;
+  text-align: right;
 }
 .header a {
   color: #fff;
@@ -127,7 +143,29 @@ button.active {
 button:hover {
   background-color: #1d1e1ce6;
   color: #fff;
+
 }
+
+/* Favorite issues list */
+.favorite-issues {
+  max-height: 76px;
+  overflow-y: auto;
+  font-size: 14px;
+  border-bottom: 1px solid #c0bdbd;
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+}
+.favorite-issues-label {
+  font-size: 12px;
+}
+.favorite-issues .youtrack-timer-button:hover {
+  cursor: pointer;
+}
+.favorite-issues .youtrack-timer-button:before {
+  content: '\25BA';
+  margin-right: 4px;
+}
+
 
 /* Loading page */
 .loading-page,

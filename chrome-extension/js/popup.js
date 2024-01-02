@@ -1,13 +1,16 @@
 
 const initPopup = async () => {
   let activeWorkItem = null;
+  let recentWorkItems = [];
+  let favoriteIssues = [];
   const { currentUser, youtrack_url, authToken, youtrackFavorite } = await chrome.storage.sync.get(['youtrack_url', 'currentUser', 'authToken', 'youtrackFavorite']);
   YouTrackAPI.init({ currentUser, youtrack_url, authToken });
 
   document.getElementsByClassName('loading-page')[0].style.display = 'block';
   try {
     activeWorkItem = await YouTrackAPI.workItems.getActive();
-    console.log('activeWorkItem', activeWorkItem)
+    recentWorkItems = await YouTrackAPI.workItems.getRecentIssues();
+    favoriteIssues = await YouTrackAPI.issues.getByIds(youtrackFavorite);
   }
   catch (e) {
     document.getElementsByClassName('missed-options-page')[0].style.display = 'block';
@@ -49,16 +52,30 @@ const initPopup = async () => {
   const favoriteToolbar = document.querySelector(".favorite-issues:not(.initialized)");
   if (youtrackFavorite !== '' && youtrackFavorite !== undefined && favoriteToolbar !== null) {
     favoriteToolbar.classList.add('initialized');
+    const issuesList = favoriteIssues;
 
-    const favoriteIssueIds = youtrackFavorite.split(',');
-    favoriteIssueIds.forEach((issueId) => {
-      let timerButton = document.createElement('button');
-      timerButton.type = 'button';
+    recentWorkItems.forEach((issue) => {
+      let index = favoriteIssues.findIndex((item) => item.id === issue.id);
+      if (index === -1) {
+        issuesList.push(issue);
+      }
+    });
+
+    issuesList.forEach((issue) => {
+      let timerButton = document.createElement('a');
+      // timerButton.type = 'button';
       timerButton.classList.add('youtrack-timer-button');
-      timerButton.innerHTML = issueId;
+      timerButton.innerHTML = issue.idReadable + ' ' + issue.summary;
+      if (timerButton.innerHTML.length > 58) {
+        timerButton.innerHTML = timerButton.innerHTML.slice(0, 58).trim() + '...';
+      }
 
-      timerButton.setAttribute('data-issue-id', issueId);
-      favoriteToolbar.appendChild(timerButton);
+      timerButton.setAttribute('data-issue-id', issue.idReadable);
+
+      let listItem = document.createElement('div');
+      listItem.appendChild(timerButton);
+
+      favoriteToolbar.appendChild(listItem);
       timerButton.addEventListener('click', timerButtonClick);
     });
   }

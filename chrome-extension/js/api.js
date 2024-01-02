@@ -29,6 +29,27 @@ const YouTrackAPI = {
         }
     },
 
+    issues: {
+        getByIds: async function (ids) {
+            const fields = 'fields=id,idReadable,summary';
+            const query = `issue ID: PROJ-32,MNG-555`;
+            const url = YouTrackAPI.url + '/api/issues' + `?${fields}&query=${query}`;
+
+            const response = await fetch(url, {
+                headers: {
+                    accept: 'application/json',
+                    authorization: `Bearer ${YouTrackAPI.authToken}`,
+                },
+                method: 'GET',
+            });
+
+            if (response.ok) {
+                return await response.json();
+            }
+            return null;
+        }
+    },
+
     workItems: {
         getActive: async function () {
             const fields = 'fields=id,created,issue(id,idReadable,summary,project(id,name)),text';
@@ -54,6 +75,33 @@ const YouTrackAPI = {
                 });
             }
             return activeWorkItem;
+        },
+        getRecentIssues: async function () {
+            const fields = 'fields=id,created,issue(id,idReadable,summary),text';
+            const startPeriod = Date.now() - 2 * 86400 * 1000; // Get two last days.
+            const url = YouTrackAPI.url + '/api/workItems' + `?${fields}` + '&author=me&createdStart=' + startPeriod;
+            const response = await fetch(url, {
+                headers: {
+                    accept: 'application/json',
+                    authorization: `Bearer ${YouTrackAPI.authToken}`,
+                },
+                method: 'GET',
+            });
+
+            let workItems = null;
+            const uniqueWorkItemIssues = [];
+            if (response.ok) {
+                workItems = await response.json();
+
+                workItems.forEach((workItem) => {
+                    let index = uniqueWorkItemIssues.findIndex((item) => item.id === workItem.issue.id);
+                    if (index === -1) {
+                        // If not found, push a new object with the desired properties
+                        uniqueWorkItemIssues.push(workItem.issue);
+                    }
+                });
+            }
+            return uniqueWorkItemIssues;
         },
         stopActive: async (description = '') => {
             const activeWorkItem = await YouTrackAPI.workItems.getActive();
