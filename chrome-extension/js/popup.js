@@ -111,6 +111,10 @@ const updateTrackedTodayTime = (todaysWorkItems, activeWorkItem) => {
   const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
 
   document.getElementsByClassName('today-time')[0].innerHTML = formattedHours + ':' + formattedMinutes;
+
+  // @todo: show todays text in icon as badge.
+  const badgeText = hours > 0 ? hours + 'h' : '';
+  chrome.action.setBadgeText({text: badgeText});
 }
 
 const showFavoriteIssues = (favoriteIssues, recentWorkItems) => {

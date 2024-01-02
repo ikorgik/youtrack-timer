@@ -12,5 +12,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
       const title = request.timer_status === 'on' ? 'View the running YouTrack timer' : 'Start a YouTrack timer'
       chrome.action.setTitle({ title })
+
     }
 );
