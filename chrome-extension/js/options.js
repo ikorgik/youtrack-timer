@@ -1,7 +1,8 @@
 const restoreOptions = async () => {
-    const { youtrack_url, authToken } = await chrome.storage.sync.get(['youtrack_url', 'authToken']);
+    const { youtrack_url, authToken, youtrackFavorite } = await chrome.storage.sync.get(['youtrack_url', 'authToken', 'youtrackFavorite']);
     document.getElementById('youtrack_url').value = youtrack_url || '';
     document.getElementById('youtrack_token').value = authToken || '';
+    document.getElementById('youtrack_favorite').value = youtrackFavorite || '';
 }
 
 const saveOptions = async (event) => {
@@ -10,10 +11,12 @@ const saveOptions = async (event) => {
     let currentUser = null;
     const youtrack_url = document.getElementById('youtrack_url').value;
     const authToken = document.getElementById('youtrack_token').value;
+    const youtrackFavorite = document.getElementById('youtrack_favorite').value;
 
     await chrome.storage.sync.set({
         youtrack_url,
-        authToken
+        authToken,
+        youtrackFavorite
     });
 
     YouTrackAPI.init({ youtrack_url, authToken });
