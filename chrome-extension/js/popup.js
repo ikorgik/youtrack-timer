@@ -1,5 +1,5 @@
 
-const initPopup = async () => {
+const initPopup = async (activeWorkItemId = null) => {
   let activeWorkItem = null;
   let recentWorkItems = [];
   let favoriteIssues = [];
@@ -9,7 +9,10 @@ const initPopup = async () => {
 
   document.getElementsByClassName('loading-page')[0].style.display = 'block';
   try {
-    activeWorkItem = await YouTrackAPI.workItems.getActive();
+    activeWorkItem = activeWorkItemId !== null
+        ? await YouTrackAPI.workItems.getById(activeWorkItemId)
+        : await YouTrackAPI.workItems.getActive();
+
     recentWorkItems = await YouTrackAPI.workItems.getRecentIssues();
     favoriteIssues = await YouTrackAPI.issues.getByIds(youtrackFavorite);
 
@@ -24,6 +27,7 @@ const initPopup = async () => {
 
   if (activeWorkItem === null) {
     document.getElementsByClassName('no-active-timers')[0].style.display = 'block';
+    document.getElementsByClassName('active-timer')[0].style.display = 'none';
 
     await chrome.runtime.sendMessage({ timer_status: 'off' });
   }
@@ -45,6 +49,8 @@ const initPopup = async () => {
 };
 
 const stopButtonClick = async (event) => {
+  event.target.disabled = true;
+
   const { currentUser, youtrack_url, authToken } = await chrome.storage.sync.get(['youtrack_url', 'currentUser', 'authToken']);
   YouTrackAPI.init({ currentUser, youtrack_url, authToken });
 
@@ -55,7 +61,9 @@ const stopButtonClick = async (event) => {
 
   await chrome.runtime.sendMessage({ timer_status: 'off' });
 
-  window.close();
+  //window.close();
+  initPopup();
+  event.target.disabled = false;
 }
 
 const timerButtonClick = async (event) => {
@@ -69,11 +77,11 @@ const timerButtonClick = async (event) => {
 
   const issueId = event.target.getAttribute('data-issue-id');
 
-  await YouTrackAPI.workItems.startTimer(issueId);
+  const startedWorkItem = await YouTrackAPI.workItems.startTimer(issueId);
   await chrome.runtime.sendMessage({ timer_status: 'on' });
 
   event.target.disabled = false;
-  initPopup();
+  initPopup(startedWorkItem.id);
 }
 
 const showActiveTimer = (activeWorkItem, youtrack_url) => {

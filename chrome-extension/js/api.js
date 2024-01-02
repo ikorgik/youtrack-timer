@@ -32,7 +32,7 @@ const YouTrackAPI = {
     issues: {
         getByIds: async function (ids) {
             const fields = 'fields=id,idReadable,summary';
-            const query = `issue ID: PROJ-32,MNG-555`;
+            const query = `issue ID: ${ids}`;
             const url = YouTrackAPI.url + '/api/issues' + `?${fields}&query=${query}`;
 
             const response = await fetch(url, {
@@ -51,6 +51,22 @@ const YouTrackAPI = {
     },
 
     workItems: {
+        getById: async function (workItemId) {
+            const fields = 'fields=id,created,issue(id,idReadable,summary,project(id,name)),duration(presentation,minutes),text';
+            const url = YouTrackAPI.url + `/api/workItems/${workItemId}` + `?${fields}`;
+            const response = await fetch(url, {
+                headers: {
+                    accept: 'application/json',
+                    authorization: `Bearer ${YouTrackAPI.authToken}`,
+                },
+                method: 'GET',
+            });
+
+            if (response.ok) {
+              return await response.json();
+            }
+            return null;
+        },
         getActive: async function () {
             const fields = 'fields=id,created,issue(id,idReadable,summary,project(id,name)),duration(presentation,minutes),text';
             const currentUserId = YouTrackAPI.currentUser.id;
@@ -139,6 +155,9 @@ const YouTrackAPI = {
                 method: 'POST',
                 body: JSON.stringify(workData),
             });
+            if (response.ok) {
+              return await response.json();
+            }
             return response;
         },
 
@@ -163,6 +182,9 @@ const YouTrackAPI = {
                 method: 'POST',
                 body: JSON.stringify(workData),
             });
+            if (response.ok) {
+              return await response.json();
+            }
             return response;
         }
     }
